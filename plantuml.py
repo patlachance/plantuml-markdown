@@ -102,7 +102,7 @@ class PlantUMLBlockProcessor(markdown.blockprocessors.BlockProcessor):
         etree.SubElement(parent, "img", src=imageurl, alt=alt, classes=classes)
 
     @staticmethod
-    def generate_uml_image(self, path, plantuml_code, imgformat):
+    def generate_uml_image(path, plantuml_code, imgformat):
         plantuml_code = plantuml_code.encode('utf8')
         tf = tempfile.NamedTemporaryFile(delete=False)
         tf.write('@startuml\n'.encode('utf8'))
@@ -138,12 +138,12 @@ class PlantUMLBlockProcessor(markdown.blockprocessors.BlockProcessor):
                 # make sure output path exists
                 if not os.path.exists(path):
                     os.makedirs(path)
-                # renaming output image using an hash code, just to not pullate
+                # renaming output image using an hash code, just to not polluate
                 # output directory with a growing number of images
                 name = os.path.join(path, os.path.basename(name))
                 newname = os.path.join(path, "%08x" % (adler32(plantuml_code) & 0xffffffff))+imgext
 
-                if not os.path.exists(newname):
+                if os.path.exists(newname):
                     os.remove(newname)
 
                 os.rename(name, newname)
