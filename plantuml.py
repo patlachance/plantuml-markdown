@@ -8,13 +8,13 @@
 
    Syntax:
 
-      ::uml:: [format="png|svg"] [classes="class1 class2 ..."] [alt="text for alt"]
+      ::uml:: [format="png|svg"] [classes="class1 class2 ..."] [alt="text for alt"] [outpath="path"]
           PlantUML script diagram
       ::end-uml::
 
    Example:
 
-      ::uml:: format="png" classes="uml myDiagram" alt="My super diagram"
+      ::uml:: format="png" classes="uml myDiagram" alt="My super diagram" outpath="picts"
           Goofy ->  MickeyMouse: calls
           Goofy <-- MickeyMouse: responds
       ::end-uml::
@@ -64,6 +64,7 @@ class PlantUMLBlockProcessor(markdown.blockprocessors.BlockProcessor):
                         \s*(format=(?P<quot>"|')(?P<format>\w+)(?P=quot))?
                         \s*(classes=(?P<quot1>"|')(?P<classes>[\w\s]+)(?P=quot1))?
                         \s*(alt=(?P<quot2>"|')(?P<alt>[\w\s"']+)(?P=quot2))?
+                        \s*(outpath=(?P<quot3>"|')(?P<outpath>[\w\s"']+)(?P=quot3))?
                     ''', re.VERBOSE)
     # Regular expression for identify end of UML script
     RE_END = re.compile(r'::end-uml::\s*$')
@@ -80,6 +81,7 @@ class PlantUMLBlockProcessor(markdown.blockprocessors.BlockProcessor):
         imgformat = m.group('format') if m.group('format') else self.config['format']
         classes = m.group('classes') if m.group('classes') else self.config['classes']
         alt = m.group('alt') if m.group('alt') else self.config['alt']
+        outpath = m.group('outpath') if m.group('outpath') else self.config['outpath']
 
         # Read blocks until end marker found
         while blocks and not self.RE_END.search(block):
@@ -92,7 +94,7 @@ class PlantUMLBlockProcessor(markdown.blockprocessors.BlockProcessor):
         # Remove block header and footer
         text = re.sub(self.RE, "", re.sub(self.RE_END, "", text))
 
-        path = os.path.abspath(self.config['outpath'])
+        path = os.path.abspath(outpath)
         if not os.path.exists(path):
             os.makedirs(path)
 
@@ -147,7 +149,7 @@ class PlantUMLBlockProcessor(markdown.blockprocessors.BlockProcessor):
                     os.remove(newname)
 
                 os.rename(name, newname)
-                return 'images/' + os.path.basename(newname)
+                return path + os.path.basename(newname)
             else:
                 # the temporary file is still available as aid understanding errors
                 raise RuntimeError('Error in "uml" directive: %s' % err)
