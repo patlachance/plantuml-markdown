@@ -99,12 +99,12 @@ class PlantUMLBlockProcessor(markdown.blockprocessors.BlockProcessor):
             os.makedirs(path)
 
         # Generate image from PlantUML script
-        imageurl = self.config['siteurl']+self.generate_uml_image(path, text, imgformat)
+        imageurl = self.config['siteurl']+self.generate_uml_image(path, outpath, text, imgformat)
         # Create image tag and append to the document
         etree.SubElement(parent, "img", src=imageurl, alt=alt, classes=classes)
 
     @staticmethod
-    def generate_uml_image(path, plantuml_code, imgformat):
+    def generate_uml_image(path, outpath, plantuml_code, imgformat):
         plantuml_code = plantuml_code.encode('utf8')
         tf = tempfile.NamedTemporaryFile(delete=False)
         tf.write('@startuml\n'.encode('utf8'))
@@ -149,7 +149,7 @@ class PlantUMLBlockProcessor(markdown.blockprocessors.BlockProcessor):
                     os.remove(newname)
 
                 os.rename(name, newname)
-                return path + os.path.basename(newname)
+                return outpath + os.path.basename(newname)
             else:
                 # the temporary file is still available as aid understanding errors
                 raise RuntimeError('Error in "uml" directive: %s' % err)
