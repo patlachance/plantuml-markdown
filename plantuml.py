@@ -163,7 +163,7 @@ class PlantUMLMarkdownExtension(markdown.Extension):
             'classes': ["uml", "Space separated list of classes for the generated image. Defaults to 'uml'."],
             'alt': ["uml diagram", "Text to show when image is not available. Defaults to 'uml diagram'"],
             'format': ["png", "Format of image to generate (png or svg). Defaults to 'png'."],
-            'outpath': ["doc_html/images", "Directory where to put generated images. Defaults to 'images'."],
+            'outpath': ["doc_html/images/", "Directory where to put generated images. Defaults to 'images'."],
             'siteurl': ["", "URL of document, used as a prefix for the image diagram. Defaults to empty string."]
         }
 
