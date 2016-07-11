@@ -149,7 +149,7 @@ class PlantUMLBlockProcessor(markdown.blockprocessors.BlockProcessor):
                     os.remove(newname)
 
                 os.rename(name, newname)
-                return outpath + os.path.basename(newname)
+                return outpath + '/' + os.path.basename(newname)
             else:
                 # the temporary file is still available as aid understanding errors
                 raise RuntimeError('Error in "uml" directive: %s' % err)
